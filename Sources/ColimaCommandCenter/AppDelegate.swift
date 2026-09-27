@@ -13,7 +13,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.statusBar = StatusBarController()
-            self.statusBar.onToggle = { [weak self] in self?.handleToggle() }
             self.statusBar.onStart = { [weak self] in self?.handleStart() }
             self.statusBar.onStop = { [weak self] in self?.handleStop() }
             self.statusBar.onOpenMainWindow = { [weak self] in self?.openMainWindow(tab: nil) }
@@ -31,26 +30,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         statusTimer?.invalidate()
-    }
-
-    private func handleToggle() {
-        Lifecycle.shared.toggle { [weak self] wasRunning, exitCode in
-            DispatchQueue.main.async { [weak self] in
-                self?.statusBar.refreshStatus()
-                self?.statusBar.refreshStatusDelayed()
-                if exitCode == 0 {
-                    Notifier.shared.post(
-                        title: L10n.tr("notif.toggle_title"),
-                        body: wasRunning ? L10n.tr("notif.stopped") : L10n.tr("notif.started")
-                    )
-                } else {
-                    Notifier.shared.post(
-                        title: L10n.tr("notif.toggle_title"),
-                        body: wasRunning ? L10n.tr("notif.stop_failed") : L10n.tr("notif.start_failed")
-                    )
-                }
-            }
-        }
     }
 
     private func handleStart() {

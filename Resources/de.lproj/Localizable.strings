@@ -28,8 +28,6 @@
 "menu.stop" = "Stoppen";
 "menu.editor" = "Konfiguration bearbeiten…";
 "menu.health" = "Status…";
-"menu.disk" = "Volumes & Speicher…";
-"menu.doctor" = "Doctor…";
 "menu.quit" = "Beenden";
 
 /* Tabs */
@@ -37,8 +35,6 @@
 "tab.raw" = "Raw YAML";
 "tab.editor" = "Konfiguration";
 "tab.health" = "Status";
-"tab.disk" = "Speicher";
-"tab.doctor" = "Doctor";
 
 /* Sections */
 "section.resources" = "Ressourcen";
@@ -94,8 +90,6 @@
 "kube.empty_marker" = "— (leer)";
 
 "status.vm" = "VM";
-"status.docker" = "Docker";
-"status.disk" = "Speicher";
 "status.vm_down" = "VM gestoppt — Docker/Speicher nicht verfügbar";
 "status.daemon" = "Daemon";
 "status.docker_storage" = "Docker Storage";
@@ -112,11 +106,6 @@
 "health.collapse_all" = "Alle zuklappen";
 
 /* Disk markers */
-"disk.vm_disks" = "VM-Festplatten";
-"disk.pvcs" = "Persistent Volume Claims";
-"disk.pvc_usage" = "PVC-Auslastung";
-"disk.docker_storage" = "Docker-Speicher";
-"disk.unavailable" = "Nicht verfügbar";
 
 /* Raw tab */
 "raw.description" = "Direkte Bearbeitung von ~/.config/colima/default/colima.yaml";
@@ -137,8 +126,6 @@
 "notif.toggle_title" = "Colima Toggle";
 "notif.stopped" = "Colima gestoppt.";
 "notif.started" = "Colima läuft, Cluster bereit.";
-"notif.stop_failed" = "Stoppen fehlgeschlagen.";
-"notif.start_failed" = "Starten fehlgeschlagen.";
 "notif.restart_title" = "Colima Command Center";
 "notif.restarted" = "Neugestartet — neue Konfiguration aktiv.";
 "notif.restart_failed" = "Neustart fehlgeschlagen.";
@@ -159,33 +146,14 @@
 "power.expand_log" = "Log ausklappen ▾";
 
 /* Health view */
-"health.loading" = "Lade Ressourcen…";
-"health.unavailable" = "Nicht verfügbar";
-"health.unavailable_hint" = "Ist Colima gestartet und kubectl erreichbar?";
 "health.refresh" = "Aktualisieren";
 "health.updated" = "Aktualisiert: %@";
 
 /* Disk view */
-"disk.loading" = "Lade Festplattenauslastung…";
-"disk.clean_button" = "Aufräumen";
-"disk.clean_confirm_title" = "Speicher aufräumen?";
-"disk.clean_confirm_msg" = "Entfernt ungenutzte Docker-Images, Volumes und stale Pods. Kann einige Minuten dauern.";
-"disk.cleanup_result" = "Aufräum-Ergebnis";
 
 /* Doctor view */
-"doctor.run_button" = "Doctor ausführen";
-"doctor.running" = "Doctor läuft…";
-"doctor.confirm_title" = "Doctor ausführen?";
-"doctor.confirm_msg" = "Führt Health-Checks aus, entfernt DiskPressure-Taints, räumt stale Pods und kubelet-Verzeichnisse auf, pruned Docker bei vollem Disk.";
-"doctor.placeholder_title" = "Doctor";
-"doctor.placeholder_hint" = "Diagnostiziert und repariert Cluster-Probleme automatisch.";
-"doctor.failed" = "Doctor fehlgeschlagen (Exit-Code %d).";
 
 /* ClusterOps */
-"ops.pruning_docker" = "Docker wird aufgeräumt...";
-"ops.pruning_volumes" = "Unbenutzte Volumes werden aufgeräumt...";
-"ops.cleaning_pods" = "Stale Pods werden entfernt...";
-"ops.after_cleanup" = "=== Nach Aufräumen ===";
 "ops.diskpressure_detected" = "DiskPressure-Taint erkannt — wird entfernt...";
 "ops.restarting_k3s" = "k3s wird neu gestartet um Taint zu löschen...";
 "ops.diskpressure_cleared" = "DiskPressure-Taint entfernt.";

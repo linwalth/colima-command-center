@@ -134,48 +134,6 @@ final class Lifecycle {
         }
     }
 
-    func toggle(completion: @escaping (_ wasRunning: Bool, _ exitCode: Int32) -> Void) {
-        lock.lock()
-        if toggleInProgress { lock.unlock(); completion(false, -1); return }
-        toggleInProgress = true
-        lock.unlock()
-
-        checkStatus { running in
-            let rc: Int32
-            if running {
-                rc = ClusterOps.shutdown()
-            } else {
-                rc = ClusterOps.startup()
-            }
-            self.lock.lock()
-            self.toggleInProgress = false
-            self.lock.unlock()
-            completion(running, rc)
-        }
-    }
-
-    /// Toggle with live stdout streaming via a callback.
-    func toggleStream(onOutput: @escaping (String) -> Void,
-                      completion: @escaping (_ wasRunning: Bool, _ exitCode: Int32) -> Void) {
-        lock.lock()
-        if toggleInProgress { lock.unlock(); completion(false, -1); return }
-        toggleInProgress = true
-        lock.unlock()
-
-        checkStatus { running in
-            let rc: Int32
-            if running {
-                rc = ClusterOps.shutdownStream(onOutput: onOutput)
-            } else {
-                rc = ClusterOps.startupStream(onOutput: onOutput)
-            }
-            self.lock.lock()
-            self.toggleInProgress = false
-            self.lock.unlock()
-            completion(running, rc)
-        }
-    }
-
     /// Explicit start — ignores cached status, always starts the VM.
     /// Guards against double-start (noop if already running).
     func startStream(onOutput: @escaping (String) -> Void,

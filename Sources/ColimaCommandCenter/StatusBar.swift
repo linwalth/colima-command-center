@@ -6,7 +6,6 @@ final class StatusBarController {
     private var lastDepCheck: Date?
     private var isCurrentlyRunning = false
     private var isRefreshing = false
-    var onToggle: (() -> Void)?
     var onStart: (() -> Void)?
     var onStop: (() -> Void)?
     var onOpenMainWindow: (() -> Void)?

@@ -28,19 +28,6 @@ enum ClusterOps {
 
     // MARK: - kubectl helpers
 
-    private static func diagLog(_ msg: String) {
-        let path = NSTemporaryDirectory() + "ccc-doctor-diag.log"
-        let ts = ISO8601DateFormatter().string(from: Date())
-        let line = "\(ts) \(msg)\n"
-        if let handle = FileHandle(forWritingAtPath: path) {
-            handle.seekToEndOfFile()
-            handle.write(Data(line.utf8))
-            handle.closeFile()
-        } else {
-            FileManager.default.createFile(atPath: path, contents: Data(line.utf8))
-        }
-    }
-
     private static func kubectl(_ args: [String]) -> (stdout: String, exitCode: Int32) {
         guard let path = KubeStatus.resolveKubectl() else { return ("", -1) }
         return ShellCapture.run(path, args: args)
@@ -108,10 +95,6 @@ enum ClusterOps {
 
     // MARK: - Startup
 
-    static func startup() -> Int32 {
-        return startupStream(onOutput: { _ in })
-    }
-
     static func startupStream(onOutput: @escaping (String) -> Void) -> Int32 {
         onOutput(L10n.tr("ops.starting_vm"))
         _ = Shell.stream(AppPaths.colima, args: colimaStartStopArgs("start"), onOutput: onOutput)
@@ -170,10 +153,6 @@ enum ClusterOps {
 
     // MARK: - Shutdown
 
-    static func shutdown() -> Int32 {
-        return shutdownStream(onOutput: { _ in })
-    }
-
     static func shutdownStream(onOutput: @escaping (String) -> Void) -> Int32 {
         onOutput(L10n.tr("ops.scaling_down"))
         scaleApps(to: 0)
@@ -187,45 +166,6 @@ enum ClusterOps {
         let rc = Shell.stream(AppPaths.colima, args: colimaStartStopArgs("stop"), onOutput: onOutput)
         onOutput(L10n.tr("ops.done"))
         return rc
-    }
-
-    // MARK: - Disk usage
-
-    struct DiskInfo {
-        let vmDisks: String
-        let pvcs: String
-        let pvcUsage: String
-        let dockerStorage: String
-    }
-
-    static func diskUsage() -> DiskInfo? {
-        let df = colimaSSH("df -hP / /var/lib/docker")
-        if df.exitCode != 0 {
-            // Fallback: try without -P (older df versions).
-            let dfFallback = colimaSSH("df -h / /var/lib/docker")
-            if dfFallback.exitCode != 0 { return nil }
-            return buildDiskInfo(dfRaw: dfFallback.stdout)
-        }
-        return buildDiskInfo(dfRaw: df.stdout)
-    }
-
-    private static func buildDiskInfo(dfRaw: String) -> DiskInfo? {
-        let pvcOut = kubectl(["get", "pvc", "-A", "-o",
-            "custom-columns=NS:.metadata.namespace,NAME:.metadata.name,CAP:.spec.resources.requests.storage,STATUS:.status.phase"])
-
-        let pvcUsageCmd = """
-        sudo bash -c 'for pvc_dir in /var/lib/rancher/k3s/storage/pvc-*; do [ -d "$pvc_dir" ] || continue; size=$(du -sh "$pvc_dir" 2>/dev/null | cut -f1); basename "$pvc_dir"; echo "  ${size}"; done'
-        """
-        let pvcUsage = colimaSSH(pvcUsageCmd)
-
-        let dockerDf = colimaSSH("docker system df")
-
-        return DiskInfo(
-            vmDisks: formatDF(dfRaw),
-            pvcs: pvcOut.stdout,
-            pvcUsage: pvcUsage.stdout,
-            dockerStorage: formatDockerDf(dockerDf.stdout)
-        )
     }
 
     // Public wrappers for StatusCollector (keep private impl unchanged).
@@ -253,31 +193,6 @@ enum ClusterOps {
         return lines.joined(separator: "\n")
     }
 
-    private static func formatDockerDf(_ raw: String) -> String {
-        // `docker system df` has multi-word TYPE values ("Local Volumes",
-        // "Build Cache") that naive whitespace-splitting corrupts. Return the
-        // table as-is (header + rows) since the output is already aligned.
-        return raw.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    // MARK: - Disk cleanup
-
-    static func cleanDisk() -> String {
-        var output: [String] = []
-        output.append(L10n.tr("ops.pruning_docker"))
-        output.append(dockerPruneOutput())
-        output.append(L10n.tr("ops.pruning_volumes"))
-        let vp = colimaSSH("docker volume prune -f")
-        output.append(vp.stdout.trimmingCharacters(in: .whitespacesAndNewlines))
-        output.append(L10n.tr("ops.cleaning_pods"))
-        output.append(cleanupStalePods())
-
-        let df = colimaSSH("df -hP / /var/lib/docker")
-        output.append("\n\(L10n.tr("ops.after_cleanup"))")
-        output.append(formatDF(df.stdout))
-        return output.joined(separator: "\n")
-    }
-
     // MARK: - Docker prune
 
     @discardableResult
@@ -286,16 +201,6 @@ enum ClusterOps {
         _ = colimaSSH("docker image prune -f")
         _ = colimaSSH("docker builder prune -f")
         return 0
-    }
-
-    private static func dockerPruneOutput() -> String {
-        var lines: [String] = []
-        for cmd in ["docker container prune -f", "docker image prune -f", "docker builder prune -f"] {
-            let r = colimaSSH(cmd)
-            let last = r.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
-            if !last.isEmpty { lines.append(last) }
-        }
-        return lines.joined(separator: "\n")
     }
 
     // MARK: - Stale pods
@@ -316,13 +221,11 @@ enum ClusterOps {
     static func doctor() -> (String, Int32) {
         var output: [String] = []
         var hadError = false
-        diagLog("[Doctor.ops] entered doctor()")
 
         // Ensure kubectl context is set BEFORE any kubectl calls — if the
         // context is empty (e.g. kubeswitch cleared it), kubectl falls back to
         // localhost:8080 and every subsequent call wastes time on retries.
         ensureContext()
-        diagLog("[Doctor.ops] ensureContext done")
 
         // Determine node name dynamically (supports non-default profiles).
         // Retry up to 3x with 2s delay — kubectl can transiently fail during
@@ -341,10 +244,8 @@ enum ClusterOps {
         if nodeName.isEmpty {
             hadError = true
             output.append(L10n.tr("ops.node_unreachable"))
-            diagLog("[Doctor.ops] node unreachable, returning early")
             return (output.joined(separator: "\n"), 1)
         }
-        diagLog("[Doctor.ops] node='\(nodeName)'")
 
         // Check DiskPressure taint
         let desc = kubectl(["describe", "node", nodeName])
@@ -404,7 +305,6 @@ enum ClusterOps {
             dockerPrune()
         }
 
-        diagLog("[Doctor.ops] returning: hadError=\(hadError) outputLines=\(output.count)")
         return (output.joined(separator: "\n"), hadError ? 1 : 0)
     }
 

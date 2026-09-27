@@ -28,8 +28,6 @@
 "menu.stop" = "Stop";
 "menu.editor" = "Edit Configuration…";
 "menu.health" = "Status…";
-"menu.disk" = "Volumes & Storage…";
-"menu.doctor" = "Doctor…";
 "menu.quit" = "Quit";
 
 /* Tabs */
@@ -37,8 +35,6 @@
 "tab.raw" = "Raw YAML";
 "tab.editor" = "Configuration";
 "tab.health" = "Status";
-"tab.disk" = "Storage";
-"tab.doctor" = "Doctor";
 
 /* Sections */
 "section.resources" = "Resources";
@@ -94,8 +90,6 @@
 "kube.empty_marker" = "— (empty)";
 
 "status.vm" = "VM";
-"status.docker" = "Docker";
-"status.disk" = "Disk";
 "status.vm_down" = "VM stopped — Docker/Disk unavailable";
 "status.daemon" = "Daemon";
 "status.docker_storage" = "Docker Storage";
@@ -112,11 +106,6 @@
 "health.collapse_all" = "Collapse All";
 
 /* Disk markers */
-"disk.vm_disks" = "VM Disks";
-"disk.pvcs" = "Persistent Volume Claims";
-"disk.pvc_usage" = "PVC Usage";
-"disk.docker_storage" = "Docker Storage";
-"disk.unavailable" = "Unavailable";
 
 /* Raw tab */
 "raw.description" = "Direct editing of ~/.config/colima/default/colima.yaml";
@@ -137,8 +126,6 @@
 "notif.toggle_title" = "Colima Toggle";
 "notif.stopped" = "Colima stopped.";
 "notif.started" = "Colima running, cluster ready.";
-"notif.stop_failed" = "Stopping failed.";
-"notif.start_failed" = "Starting failed.";
 "notif.restart_title" = "Colima Command Center";
 "notif.restarted" = "Restarted — new configuration active.";
 "notif.restart_failed" = "Restart failed.";
@@ -159,33 +146,14 @@
 "power.expand_log" = "Expand log ▾";
 
 /* Health view */
-"health.loading" = "Loading resources…";
-"health.unavailable" = "Unavailable";
-"health.unavailable_hint" = "Is Colima running and kubectl reachable?";
 "health.refresh" = "Refresh";
 "health.updated" = "Updated: %@";
 
 /* Disk view */
-"disk.loading" = "Loading disk usage…";
-"disk.clean_button" = "Clean Up";
-"disk.clean_confirm_title" = "Clean up storage?";
-"disk.clean_confirm_msg" = "Removes unused Docker images, volumes, and stale pods. May take a few minutes.";
-"disk.cleanup_result" = "Cleanup Result";
 
 /* Doctor view */
-"doctor.run_button" = "Run Doctor";
-"doctor.running" = "Doctor running…";
-"doctor.confirm_title" = "Run Doctor?";
-"doctor.confirm_msg" = "Runs health checks, removes DiskPressure taints, cleans up stale pods and kubelet directories, prunes Docker if disk is full.";
-"doctor.placeholder_title" = "Doctor";
-"doctor.placeholder_hint" = "Diagnoses and repairs cluster issues automatically.";
-"doctor.failed" = "Doctor failed (exit code %d).";
 
 /* ClusterOps */
-"ops.pruning_docker" = "Pruning Docker...";
-"ops.pruning_volumes" = "Pruning unused volumes...";
-"ops.cleaning_pods" = "Cleaning stale pods...";
-"ops.after_cleanup" = "=== After Cleanup ===";
 "ops.diskpressure_detected" = "DiskPressure taint detected — removing...";
 "ops.restarting_k3s" = "Restarting k3s to clear stale taint...";
 "ops.diskpressure_cleared" = "DiskPressure taint cleared.";
