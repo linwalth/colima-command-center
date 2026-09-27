@@ -147,6 +147,7 @@
 
 /* Health view */
 "health.refresh" = "Aktualisieren";
+"health.unavailable_hint" = "Ist Colima gestartet und kubectl erreichbar?";
 "health.updated" = "Aktualisiert: %@";
 
 /* Disk view */

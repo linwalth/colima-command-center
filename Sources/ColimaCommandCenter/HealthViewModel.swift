@@ -20,6 +20,7 @@ final class HealthViewModel: ObservableObject {
     @Published var k8sCleanResult: String?
 
     private var refreshTimer: Timer?
+    private var userToggled: Set<String> = []
 
     func refresh() {
         isLoading = true
@@ -44,10 +45,11 @@ final class HealthViewModel: ObservableObject {
                     self.loadHistory15.append(l15)
                     if self.loadHistory15.count > 30 { self.loadHistory15.removeFirst() }
                 }
-                // Merge collapse defaults for newly-seen titles.
+                // Apply collapse defaults ONLY for titles the user has never
+                // toggled. Once a user expands/collapses a section, remember
+                // their choice and never override it on refresh.
                 let allSections = result.vmSections + result.dockerSections + result.kubeSections
-                let knownTitles = Set(self.collapsed)
-                for s in allSections where s.collapsedByDefault && !knownTitles.contains(s.title) {
+                for s in allSections where s.collapsedByDefault && !self.userToggled.contains(s.title) {
                     self.collapsed.insert(s.title)
                 }
                 let newTitles = Set(allSections.map { $0.title })
@@ -108,6 +110,7 @@ final class HealthViewModel: ObservableObject {
     }
 
     func toggleCollapsed(_ title: String) {
+        userToggled.insert(title)
         if collapsed.contains(title) { collapsed.remove(title) }
         else { collapsed.insert(title) }
     }

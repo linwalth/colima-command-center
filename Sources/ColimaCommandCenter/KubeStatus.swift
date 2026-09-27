@@ -14,6 +14,10 @@ struct KubeStatus {
     static func run() -> [Section]? {
         guard let kubectl = resolveKubectl() else { return nil }
 
+        // Ensure kubectl context is set — kubeswitch can clear it, leaving
+        // kubectl to fall back to localhost:8080 and fail every query.
+        ClusterOps.ensureContext()
+
         // Probe cluster reachability with two independent queries so a single
         // transient failure (k3s warm-up, brief API hiccup) doesn't blank the
         // whole panel. Only if BOTH fail do we treat the cluster as unreachable.
