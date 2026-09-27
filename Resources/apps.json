@@ -1,0 +1,9 @@
+[
+  { "ns": "azerothcore", "name": "ac-authserver", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "azerothcore", "name": "ac-worldserver", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "dmvault", "name": "datomic", "defaultReplicas": 1, "kind": "statefulset" },
+  { "ns": "dmvault", "name": "dmvault", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "dnd-tools", "name": "dnd-tools", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "dnd-quickref", "name": "dnd-quickref", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "cupofwonder", "name": "cupofwonder", "defaultReplicas": 1, "kind": "deployment" }
+]

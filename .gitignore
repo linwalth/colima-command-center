@@ -1,0 +1,16 @@
+.build/
+.swiftpm/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+.DS_Store
+
+build/
+dist/
+*.app
+!scripts/templates/
+
+# Generated icon intermediates (keep final .icns)
+Resources/AppIcon.iconset/
+
+Package.resolved

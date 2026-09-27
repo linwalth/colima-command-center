@@ -1,0 +1,206 @@
+/* Colima Command Center — German */
+
+/* Status */
+"status.running" = "Status: ● läuft";
+"status.stopped" = "Status: ○ gestoppt";
+"status.loading" = "Status: …";
+
+/* Install */
+"menu.install_missing" = "Fehlende Pakete installieren…";
+"menu.initialize" = "Colima initialisieren…";
+"install.title_deps" = "Fehlende Abhängigkeiten: %@";
+"install.instructions_deps" = "Folgende Pakete werden benötigt:\n\n%@\n\nKlicke „Installieren“, um fehlende Pakete per Homebrew zu installieren und Colima zu starten.";
+"install.run_brew" = "Installieren";
+"install.installing" = "Installiere...";
+"install.installing_hint" = "Homebrew installiert fehlende Pakete. Dies kann mehrere Minuten dauern.";
+"install.complete" = "Installation abgeschlossen.";
+
+/* Status extras */
+"status.not_initialized" = "Colima nicht initialisiert";
+"status.missing_deps" = "Fehlend: %@";
+
+/* Editor */
+"editor.no_config" = "Keine colima.yaml gefunden. Starte Colima zunächst, um die Konfiguration zu generieren.";
+
+/* Menu */
+"menu.toggle" = "Starten / Stoppen";
+"menu.start" = "Starten";
+"menu.stop" = "Stoppen";
+"menu.editor" = "Konfiguration bearbeiten…";
+"menu.health" = "Status…";
+"menu.disk" = "Volumes & Speicher…";
+"menu.doctor" = "Doctor…";
+"menu.quit" = "Beenden";
+
+/* Tabs */
+"tab.curated" = "Kuratiert";
+"tab.raw" = "Raw YAML";
+"tab.editor" = "Konfiguration";
+"tab.health" = "Status";
+"tab.disk" = "Speicher";
+"tab.doctor" = "Doctor";
+
+/* Sections */
+"section.resources" = "Ressourcen";
+"section.kubernetes" = "Kubernetes";
+"section.advanced" = "Erweitert";
+"section.network_dns" = "Netzwerk — DNS";
+"section.docker_logging" = "Docker Logging";
+"section.immutable_title" = "Immutable (nach VM-Erstellung festgelegt)";
+
+/* Resource rows */
+"row.cpu" = "CPU-Kerne";
+"row.ram" = "RAM";
+"row.disk_container" = "Laufwerk (Containerdaten)";
+"row.root_disk" = "Root-Partition (k3s/PVCs)";
+"unit.cores" = "cores";
+"unit.gib" = "GiB";
+
+/* Kubernetes */
+"k8s.enabled" = "k3s aktiviert";
+"k8s.version_placeholder" = "k3s-Version (z.B. v1.35.0+k3s1)";
+"k8s.version_label" = "Version";
+"k8s.version_custom" = "Manuell eingeben…";
+
+/* Advanced toggles */
+"toggle.mount_inotify" = "mountInotify (experimentell)";
+"toggle.forward_agent" = "SSH-Agent weiterleiten";
+"toggle.rosetta" = "Rosetta (amd64-Emulation)";
+"toggle.binfmt" = "binfmt (Cross-Arch-Builds)";
+
+/* DNS */
+"dns.server_placeholder" = "DNS-Server";
+"dns.add" = "+ DNS hinzufügen";
+
+/* Docker logging */
+"docker.max_size" = "max-size";
+"docker.max_file" = "max-file";
+
+/* Immutable box */
+"immutable.keys" = "arch, runtime, vmType, mountType";
+"immutable.hint" = "Diese Werte können nur bei neuer VM geändert werden ('colima delete' + Neuaufbau).";
+
+/* Grow-only hint */
+"hint.grow_only" = "Disks sind nur vergrößerbar (Colima-Limit). Minimum: Container %1$d GiB, Root %2$d GiB.";
+
+/* k8s resource blocks */
+"kube.section.deployments" = "Deployments";
+"kube.section.pods" = "Pods";
+"kube.section.nodes" = "Nodes";
+"kube.section.services" = "Services";
+"kube.section.pvcs" = "PersistentVolumeClaims";
+"kube.section.flux" = "Flux";
+"kube.section.gateway" = "Gateway API";
+"kube.empty_marker" = "— (leer)";
+
+"status.vm" = "VM";
+"status.docker" = "Docker";
+"status.disk" = "Speicher";
+"status.vm_down" = "VM gestoppt — Docker/Speicher nicht verfügbar";
+"status.daemon" = "Daemon";
+"status.docker_storage" = "Docker Storage";
+"status.subtab.vm" = "Colima VM";
+"status.subtab.docker" = "Docker";
+"status.subtab.k8s" = "Kubernetes";
+"status.cleanup_docker" = "Sanftes Cleanup";
+"status.cleanup_k8s" = "Cleanup";
+"kube.not_installed" = "— (nicht installiert)";
+"kube.query_failed" = "— (Abfrage fehlgeschlagen)";
+
+/* Health view extras */
+"health.expand_all" = "Alle aufklappen";
+"health.collapse_all" = "Alle zuklappen";
+
+/* Disk markers */
+"disk.vm_disks" = "VM-Festplatten";
+"disk.pvcs" = "Persistent Volume Claims";
+"disk.pvc_usage" = "PVC-Auslastung";
+"disk.docker_storage" = "Docker-Speicher";
+"disk.unavailable" = "Nicht verfügbar";
+
+/* Raw tab */
+"raw.description" = "Direkte Bearbeitung von ~/.config/colima/default/colima.yaml";
+
+/* Loading */
+"loading.config" = "Lade colima.yaml…";
+
+/* Buttons */
+"btn.reload" = "Neu laden";
+"btn.save" = "Speichern";
+
+/* Status messages */
+"msg.saved" = "Gespeichert";
+"msg.read_failed_prefix" = "Lesen fehlgeschlagen: %@";
+"msg.save_failed_prefix" = "Speichern fehlgeschlagen: %@";
+
+/* Notifications */
+"notif.toggle_title" = "Colima Toggle";
+"notif.stopped" = "Colima gestoppt.";
+"notif.started" = "Colima läuft, Cluster bereit.";
+"notif.stop_failed" = "Stoppen fehlgeschlagen.";
+"notif.start_failed" = "Starten fehlgeschlagen.";
+"notif.restart_title" = "Colima Command Center";
+"notif.restarted" = "Neugestartet — neue Konfiguration aktiv.";
+"notif.restart_failed" = "Neustart fehlgeschlagen.";
+
+/* Restart alert */
+"alert.title" = "Colima läuft";
+"alert.message" = "Die Konfiguration wurde gespeichert. Damit die Änderungen wirksam werden, muss Colima neu gestartet werden.";
+"alert.cancel" = "Abbrechen";
+"alert.restart" = "Stoppen & neu starten";
+
+/* Window */
+"window.title" = "Colima Command Center";
+
+/* Power bar */
+"power.running" = "Colima läuft";
+"power.stopped" = "Colima gestoppt";
+"power.collapse_log" = "Log einklappen ▴";
+"power.expand_log" = "Log ausklappen ▾";
+
+/* Health view */
+"health.loading" = "Lade Ressourcen…";
+"health.unavailable" = "Nicht verfügbar";
+"health.unavailable_hint" = "Ist Colima gestartet und kubectl erreichbar?";
+"health.refresh" = "Aktualisieren";
+"health.updated" = "Aktualisiert: %@";
+
+/* Disk view */
+"disk.loading" = "Lade Festplattenauslastung…";
+"disk.clean_button" = "Aufräumen";
+"disk.clean_confirm_title" = "Speicher aufräumen?";
+"disk.clean_confirm_msg" = "Entfernt ungenutzte Docker-Images, Volumes und stale Pods. Kann einige Minuten dauern.";
+"disk.cleanup_result" = "Aufräum-Ergebnis";
+
+/* Doctor view */
+"doctor.run_button" = "Doctor ausführen";
+"doctor.running" = "Doctor läuft…";
+"doctor.confirm_title" = "Doctor ausführen?";
+"doctor.confirm_msg" = "Führt Health-Checks aus, entfernt DiskPressure-Taints, räumt stale Pods und kubelet-Verzeichnisse auf, pruned Docker bei vollem Disk.";
+"doctor.placeholder_title" = "Doctor";
+"doctor.placeholder_hint" = "Diagnostiziert und repariert Cluster-Probleme automatisch.";
+"doctor.failed" = "Doctor fehlgeschlagen (Exit-Code %d).";
+
+/* ClusterOps */
+"ops.pruning_docker" = "Docker wird aufgeräumt...";
+"ops.pruning_volumes" = "Unbenutzte Volumes werden aufgeräumt...";
+"ops.cleaning_pods" = "Stale Pods werden entfernt...";
+"ops.after_cleanup" = "=== Nach Aufräumen ===";
+"ops.diskpressure_detected" = "DiskPressure-Taint erkannt — wird entfernt...";
+"ops.restarting_k3s" = "k3s wird neu gestartet um Taint zu löschen...";
+"ops.diskpressure_cleared" = "DiskPressure-Taint entfernt.";
+"ops.no_diskpressure" = "Kein DiskPressure-Taint.";
+"ops.node_unreachable" = "Fehler: Kubernetes-API nicht erreichbar.";
+"ops.stale_dirs_removing" = "%d stale kubelet-Verzeichnisse — werden entfernt...";
+"ops.disk_full_prune" = "Disk bei %d%% — Docker wird aufgeräumt...";
+"ops.starting_vm" = "VM wird gestartet...";
+"ops.waiting_vm" = "Warte bis VM bereit...";
+"ops.starting_docker" = "Docker-Daemon wird gestartet...";
+"ops.starting_k3s" = "k3s wird gestartet...";
+"ops.fixing_context" = "kubectl-Context wird korrigiert...";
+"ops.running_doctor" = "Doctor wird ausgeführt...";
+"ops.scaling_apps" = "Apps werden hochskaliert...";
+"ops.scaling_down" = "Apps werden heruntergefahren...";
+"ops.stopping_k3s" = "k3s wird gestoppt...";
+"ops.stopping_vm" = "VM wird gestoppt...";
+"ops.done" = "Fertig.";
