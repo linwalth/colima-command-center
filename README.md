@@ -1,125 +1,189 @@
 # Colima Command Center
 
-macOS-Menuleisten-App zur Steuerung der lokalen Colima-VM, Docker und k3s-Workloads.
-Alle Operationen nativ in Swift implementiert — keine externen Shell-Skripte.
+A macOS menu bar app for managing local Colima VMs, Docker, and k3s workloads.
+All operations are implemented natively in Swift — no external shell scripts.
+
+## What It Does
+
+Colima Command Center sits in your menu bar and gives you a single-window
+dashboard for your local Kubernetes development environment:
+
+- **Start/stop the Colima VM** with explicit buttons (no guesswork toggle)
+- **Live monitoring** of CPU, RAM, disk usage, and load averages
+- **Docker status** with gentle, safe cleanup
+- **Kubernetes resource browser** for deployments, pods, nodes, services, PVCs
+- **Configuration editor** for `colima.yaml` with a k3s version picker
+- **Automatic app scaling** on startup/shutdown (configure via `apps.json`)
 
 ## Features
 
-### Menuleiste
-- **Status-Icon** (Shippingbox): Live-Status (Lauft/Gestoppt), 5s-Polling
-- **Explizite Start/Stop-Buttons**: Aktion richtet sich nach Label, nicht nach geratenem Status
-- **Multi-Profil-Support**: `COLIMA_PROFILE` env fur nicht-default Profile
+### Menu Bar
+- **Status icon** (shipping box) with live running/stopped state, 5s polling
+- **Explicit start/stop actions** — the button does exactly what its label says,
+  never guesses VM state
+- **Multi-profile support** via `COLIMA_PROFILE` environment variable
 
-### Status-Tab (Live-Dashboard)
-Drei Sub-Tabs mit Auto-Refresh (5s):
+### Status Tab (Live Dashboard)
+Three sub-tabs with automatic 5-second refresh:
 
 #### Colima VM
-- Animierter Status-Indicator (pulsierender Ring)
-- **Kreisformige Gauges**: CPU %, RAM %, Data Disk % (Farb-Coding grun/gelb/rot)
-- **Lineare Progress Bars**: Data Disk, Root Disk
-- **Load Average Graph**: 3-Linien-Sparkline (1m blau / 5m lila / 15m orange) mit Referenzlinie bei voller CPU-Auslastung
-- Runtime, Adresse, Arch, CPU-Cores
+- Animated status indicator (pulsing ring)
+- **Circular gauges**: CPU %, RAM %, Data Disk % (color-coded green/yellow/red)
+- **Linear progress bars**: Data Disk, Root Disk
+- **Load average graph**: 3-line sparkline (1m blue / 5m purple / 15m orange)
+  with a dashed reference line at full CPU utilization
+- Runtime, address, architecture, CPU cores
 
 #### Docker
-- Daemon-Status (active/inactive + running container count)
-- Docker Storage (`docker system df` Tabelle)
-- **Sanftes Cleanup**: Loscht nur beendete Container, nicht-getaggte Images, ungenutzten Build-Cache
+- Daemon status (active/inactive + running container count)
+- Docker storage breakdown (`docker system df` table)
+- **Gentle cleanup**: removes only exited containers, untagged (dangling)
+  images, and unused build cache — never touches running containers or tagged
+  images
 
 #### Kubernetes
-- Deployments, Pods, Nodes, Services, PVCs, Flux, Gateway API (kollapsible Sections)
-- **Safe Cleanup**: Loscht erfolgreich abgeschlossene Jobs, fehlgeschlagene/abgeschlossene Pods; meldet Pending PVCs
+- Collapsible sections for Deployments, Pods, Nodes, Services, PVCs, Flux CD,
+  and Gateway API resources
+- **Safe cleanup**: deletes completed jobs, failed/succeeded pods; reports
+  (but does not delete) pending PVCs
+- Expand/collapse all controls
 
-### Konfigurations-Tab
-- **Kuratierter Editor**: CPU, Memory, Disk, Root-Disk (grow-only), k8s Enabled + Version
-- **k3s-Versions-Picker**: Lad Releases von GitHub API, filtert RCs, garantiert laufende Version in Dropdown
-- **Advanced Toggles**: mountInotify, forwardAgent, Rosetta, binfmt
-- **DNS-Listen-Editor** + **Docker log-opts** (numeric quoting verhindert Daemon-Crashes)
-- **Raw YAML-Tab**: Freie Bearbeitung mit Kommentar-Erhaltung
-- **Atomares Speichern** + Restart-Prompt bei laufender VM
+### Configuration Tab
+- **Curated editor**: CPU, memory, disk, root disk (grow-only), k8s enabled +
+  version, advanced toggles (mountInotify, forwardAgent, Rosetta, binfmt)
+- **k3s version picker**: fetches releases from the GitHub API, filters out
+  release candidates, guarantees the currently-running version is always
+  selectable
+- **DNS list editor** and **Docker log-opts** fields (numeric quoting prevents
+  daemon crashes)
+- **Raw YAML tab**: free-form editing with comment preservation
+- **Atomic saves** with a restart prompt when the VM is running
 
 ### Power Bar
-- Farbkreis (grun=luft, grau=gestoppt) + bedingter Start/Stopp-Button
-- Live-Streaming-Logs (aufklappbar) wahrend Start/Stop
+- Color circle (green = running, gray = stopped) + contextual start/stop button
+- Live streaming logs (collapsible) during start/stop operations
 
-## Build & Install
+## Requirements
+
+- macOS 13+
+- Swift 5.9+ (Xcode Command Line Tools)
+- [Colima](https://github.com/abiosoft/colima) (`/opt/homebrew/bin/colima`)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/) (`/opt/homebrew/bin/kubectl`)
+- [Homebrew](https://brew.sh) (`/opt/homebrew/bin` or `/usr/local/bin`)
+
+The app automatically injects Homebrew paths into all spawned process
+environments. GUI apps launched from Finder/Dock inherit launchd's minimal
+PATH (`/usr/bin:/bin:/usr/sbin:/sbin`) which omits Homebrew — without this
+enrichment, `colima` fails with "lima not found" and `kubectl` is unreachable.
+
+## Installation
+
+### Quick install (recommended)
 
 ```bash
+git clone https://github.com/linwalth/colima-command-center.git
+cd colima-command-center
 ./scripts/build.sh
 ```
 
-Assembliert `.app` nach `~/Applications/Colima Command Center.app`, ad-hoc signiert, registriert bei Spotlight.
+This assembles the `.app` bundle into `~/Applications/Colima Command Center.app`,
+signs it ad hoc, and registers it with Spotlight. Launch it from there or via
+Spotlight search ("colima command").
 
-### Manueller Build (ohne Installer)
+### Manual build
 
 ```bash
 swift build -c release
 ```
 
-Binary landet in `.build/release/ColimaCommandCenter`. Fur volle Funktionalitat (Bundle, Icon, Lokalisierung) `build.sh` verwenden.
+The binary lands in `.build/release/ColimaCommandCenter`. For full functionality
+(bundle, icon, localization, resource embedding), use `build.sh` instead.
 
-## Anforderungen
-
-- macOS 13+
-- Swift 5.9+ (Command Line Tools)
-- Colima (`/opt/homebrew/bin/colima`)
-- kubectl (`/opt/homebrew/bin/kubectl`)
-- Homebrew (`/opt/homebrew/bin` oder `/usr/local/bin`)
-
-Die App injiziert Homebrew-Pfade automatisch in alle Process-Environments. GUI-Apps bekommen von launchd nur ein minimales PATH (`/usr/bin:/bin:/usr/sbin:/sbin`), das Homebrew-Verzeichnisse ausschliesst. Ohne diese Anreicherung wurden colima ("lima not found") und kubectl fehlschlagen. Ref: https://rares.blog/articles/macos-gui-path-codex
-
-## Konfiguration
+## Configuration
 
 ### Colima Home
-Priorisierte Auflosung:
-1. `COLIMA_HOME` env-Variable
+
+Resolved in priority order:
+
+1. `COLIMA_HOME` environment variable
 2. `~/.config/colima` (XDG)
-3. `~/.colima` (Legacy)
+3. `~/.colima` (legacy)
 
-### Colima Profile
-Default: `default`. Override via `COLIMA_PROFILE` env-Variable.
+### Colima Profiles
 
-### Kubeconfig
-App nutzt denselben Context wie `kubectl`. `ensureContext()` stellt sicher dass der Colima-Context aktiv ist (hilfreich bei kubeswitch-Nutzung).
+Defaults to `default`. Override with the `COLIMA_PROFILE` environment variable.
+All `colima` commands (start, stop, ssh, list) respect the profile.
 
-## Lokalisierung
+### Kubernetes Context
 
-Deutsch (Standard) und Englisch. Folgt macOS-Systemsprache.
-Strings in `Resources/de.lproj/` und `Resources/en.lproj/Localizable.strings`.
+The app uses the same context as `kubectl`. An `ensureContext()` call verifies
+the Colima context is active before each query — useful when switching between
+contexts with tools like [kubeswitch](https://github.com/danielfoehrKn/kubeswitch).
 
-## Architektur
+### App Definitions (`apps.json`)
+
+The startup sequence scales configured apps to 1 replica; shutdown scales them
+to 0. Define your workloads in `Resources/apps.json`:
+
+```json
+[
+  { "ns": "myapp", "name": "frontend", "defaultReplicas": 1, "kind": "deployment" },
+  { "ns": "myapp", "name": "database", "defaultReplicas": 1, "kind": "statefulset" }
+]
+```
+
+Edit this file to match your own workloads. No code changes needed.
+
+## Localization
+
+German (default) and English. Follows the macOS system language.
+Translation strings live in `Resources/de.lproj/` and `Resources/en.lproj/Localizable.strings`.
+
+## Architecture
 
 ```
 Sources/ColimaCommandCenter/
-  main.swift              — App-Bootstrap (accessory policy)
-  AppDelegate.swift       — Koordination StatusBar <-> Lifecycle <-> Window
-  StatusBar.swift          — NSStatusItem + Menu, explizite Start/Stop-Callbacks
-  MainWindow.swift         — Hauptfenster (TabView + PowerBar), PowerViewModel
-  Lifecycle.swift          — colima list/status, startStream/stopStream/restart
-  ShellCapture.swift       — Process-Runner mit 30s-Timeout-Watchdog (Process-Group-Kill)
-  ClusterOps.swift         — Native VM/Docker/k3s-Operationen, colimaSSH (bash -c wrapper)
-  StatusCollector.swift     — Strukturierte VM-Metriken + Section-Assembly fur Status-Tab
-  KubeStatus.swift         — kubectl-Resource-Queries (two-probe gate, tolerant)
-  K3sVersions.swift        — GitHub-API k3s-Release-Fetcher (RC-filter, current-version-guarantee)
-  ColimaConfig.swift       — Zeilenbasierter YAML-Parser/Writer (Kommentar-Erhaltung)
-  EditorViewModel.swift     — Config laden/speichern + Restart-Flow
-  EditorView.swift          — SwiftUI Config-Editor (kuratiert + raw)
-  HealthView.swift          — Status-Tab: Sub-Tabs (VM/Docker/K8s), Gauges, Sparkline, Cleanup
-  HealthViewModel.swift     — Auto-Refresh, Load-History-Tracking, Cleanup-Trigger
-  DependencyChecker.swift   — colima/kubectl Erkennung (Homebrew-Pfade + which)
-  Notify.swift              — UNUserNotificationCenter Wrapper
-  L10n.swift               — Localization-Helper (NSLocalizedString)
+  main.swift              — App bootstrap (accessory policy)
+  AppDelegate.swift       — Coordinates StatusBar, Lifecycle, and Window
+  StatusBar.swift         — NSStatusItem + menu, explicit start/stop callbacks
+  MainWindow.swift        — Main window (TabView + PowerBar), PowerViewModel
+  Lifecycle.swift         — colima list checks, startStream/stopStream/restart
+  ShellCapture.swift       — Process runner with 30s timeout watchdog (process-group kill)
+  ClusterOps.swift         — Native VM/Docker/k3s operations, colimaSSH (bash -c wrapper)
+  StatusCollector.swift    — Structured VM metrics + section assembly for Status tab
+  KubeStatus.swift        — kubectl resource queries (two-probe gate, fault-tolerant)
+  K3sVersions.swift       — GitHub API k3s release fetcher (RC filter, current-version guarantee)
+  ColimaConfig.swift      — Line-based YAML parser/writer (preserves comments)
+  EditorViewModel.swift   — Config load/save + restart flow
+  EditorView.swift        — SwiftUI config editor (curated + raw)
+  HealthView.swift        — Status tab: sub-tabs (VM/Docker/K8s), gauges, sparkline, cleanup
+  HealthViewModel.swift   — Auto-refresh, load history tracking, cleanup triggers
+  DependencyChecker.swift — colima/kubectl detection (Homebrew paths + which)
+  Notify.swift            — UNUserNotificationCenter wrapper
+  L10n.swift              — Localization helper (NSLocalizedString)
 
 Resources/
-  de.lproj/Localizable.strings — Deutsche Strings
-  en.lproj/Localizable.strings — Englische Strings
-  AppIcon.icns                  — App-Icon
+  de.lproj/Localizable.strings — German strings
+  en.lproj/Localizable.strings — English strings
+  apps.json                    — App definitions for startup/shutdown scaling
+  AppIcon.icns                 — App icon
 ```
 
-## Technische Highlights
+## Technical Highlights
 
-- **Process-Group kill** (`kill(-pgid, SIGKILL)`) verhindert Pipe-Deadlocks bei colima ssh Grandchild-Prozessen
-- **`colima list` statt `colima status`** fur Status-Checks — immer schnell, kein SSH-Socket-Hanging
-- **`bash -c` wrapper** fur `colima ssh` — colima execs argv direkt (keine Shell), Single-String-Commands wurden ENOENT
-- **enrichedEnvironment()** — prepentet Homebrew-Pfade fur GUI-launched Processes (launchd PATH = `/usr/bin:/bin`)
-- **Two-probe gate** in KubeStatus — Panel zeigt Daten solange mindestens eine Query (deploy ODER nodes) erfolgreich
-- **Safe cleanup** — Docker: nur exited/dangling; K8s: nur succeeded/failed Pods + Jobs, Pending PVCs nur gemeldet
+- **Process-group kill** (`kill(-pgid, SIGKILL)`) prevents pipe deadlocks when
+  `colima ssh` grandchild processes keep stdout open after the parent exits
+- **`colima list` instead of `colima status`** for status checks — always fast,
+  no SSH socket hanging during VM shutdown
+- **`bash -c` wrapper for `colima ssh`** — colima execs argv directly (no
+  shell), so single-string commands would hit ENOENT
+- **`enrichedEnvironment()`** — prepends Homebrew paths for GUI-launched
+  processes (launchd PATH omits `/opt/homebrew/bin`)
+- **Two-probe gate** in KubeStatus — the panel shows data as long as at least
+  one probe (deployments OR nodes) succeeds, surviving transient API hiccups
+- **Safe cleanup** — Docker: only exited/dangling; K8s: only succeeded/failed
+  pods + completed jobs, pending PVCs reported but never deleted
+
+## License
+
+MIT
