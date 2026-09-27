@@ -29,8 +29,13 @@ fi
 
 # Embed localization resources
 for LPROJ in "$REPO_DIR"/Resources/*.lproj; do
-    [ -d "$LPROJ" ] && cp -R "$LPROJ" "$APP_DIR/Contents/Resources/"
+  [ -d "$LPROJ" ] && cp -R "$LPROJ" "$APP_DIR/Contents/Resources/"
 done
+
+# Embed apps.json config
+if [ -f "$REPO_DIR/Resources/apps.json" ]; then
+  cp "$REPO_DIR/Resources/apps.json" "$APP_DIR/Contents/Resources/apps.json"
+fi
 
 cat > "$APP_DIR/Contents/Info.plist" <<'XML'
 <?xml version="1.0" encoding="UTF-8"?>
